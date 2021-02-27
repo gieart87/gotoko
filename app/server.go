@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 
+	"gorm.io/driver/mysql"
+
 	"gorm.io/driver/postgres"
 
 	"github.com/joho/godotenv"
@@ -31,14 +33,21 @@ type DBConfig struct {
 	DBPassword string
 	DBName     string
 	DBPort     string
+	DBDriver   string
 }
 
 func (server *Server) Initialize(appConfig AppConfig, dbConfig DBConfig) {
 	fmt.Println("Welcome to " + appConfig.AppName)
 
 	var err error
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Jakarta", dbConfig.DBHost, dbConfig.DBUser, dbConfig.DBPassword, dbConfig.DBName, dbConfig.DBPort)
-	server.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+
+	if dbConfig.DBDriver == "mysql" {
+		dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", dbConfig.DBUser, dbConfig.DBPassword, dbConfig.DBHost, dbConfig.DBPort, dbConfig.DBName)
+		server.DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	} else {
+		dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Jakarta", dbConfig.DBHost, dbConfig.DBUser, dbConfig.DBPassword, dbConfig.DBName, dbConfig.DBPort)
+		server.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	}
 
 	if err != nil {
 		panic("Failed on connecting to the database server")
@@ -80,6 +89,7 @@ func Run() {
 	dbConfig.DBPassword = getEnv("DB_PASSWORD", "password")
 	dbConfig.DBName = getEnv("DB_NAME", "dbname")
 	dbConfig.DBPort = getEnv("DB_PORT", "5432")
+	dbConfig.DBDriver = getEnv("DB_DRIVER", "postgres")
 
 	server.Initialize(appConfig, dbConfig)
 	server.Run(":" + appConfig.AppPort)
