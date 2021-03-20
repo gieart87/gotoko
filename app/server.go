@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gieart87/gotoko/database/seeders"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 
@@ -40,6 +42,7 @@ func (server *Server) Initialize(appConfig AppConfig, dbConfig DBConfig) {
 
 	server.initializeDB(dbConfig)
 	server.initializeRoutes()
+	seeders.DBSeed(server.DB)
 }
 
 func (server *Server) Run(addr string) {
