@@ -6,7 +6,7 @@ import (
 	"github.com/unrolled/render"
 )
 
-func Home(w http.ResponseWriter, r *http.Request) {
+func (s *Server) Home(w http.ResponseWriter, r *http.Request) {
 	render := render.New(render.Options{
 		Layout: "layout",
 	})

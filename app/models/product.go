@@ -27,3 +27,15 @@ type Product struct {
 	UpdatedAt        time.Time
 	DeletedAt        gorm.DeletedAt
 }
+
+func (p *Product) GetProducts(db *gorm.DB) (*[]Product, error) {
+	var err error
+	var products []Product
+
+	err = db.Debug().Limit(20).Find(&products).Error
+	if err != nil {
+		return &[]Product{}, err
+	}
+
+	return &products, err
+}
