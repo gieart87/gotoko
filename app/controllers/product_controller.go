@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gieart87/gotoko/app/models"
 
@@ -13,8 +14,13 @@ func (server *Server) Products(w http.ResponseWriter, r *http.Request) {
 		Layout: "layout",
 	})
 
+	var page = 1
+	if r.URL.Query().Get("page") != "" {
+		page, _ = strconv.Atoi(r.URL.Query().Get("page"))
+	}
+
 	productModel := models.Product{}
-	products, err := productModel.GetProducts(server.DB)
+	products, err := productModel.GetProducts(server.DB, page)
 	if err != nil {
 		return
 	}

@@ -28,11 +28,12 @@ type Product struct {
 	DeletedAt        gorm.DeletedAt
 }
 
-func (p *Product) GetProducts(db *gorm.DB) (*[]Product, error) {
+func (p *Product) GetProducts(db *gorm.DB, offset int) (*[]Product, error) {
 	var err error
 	var products []Product
+	var count int64
 
-	err = db.Debug().Model(&Product{}).Limit(20).Find(&products).Error
+	err = db.Debug().Model(&Product{}).Offset(offset).Find(&products).Count(&count).Error
 	if err != nil {
 		return nil, err
 	}
