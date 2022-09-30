@@ -1,0 +1,27 @@
+{{ define "pagination" }}
+<div class="row">
+	<div class="col-12">
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" href="{{ .pagination.PrevPage }}" tabindex="-1">
+                <i class="fa fa-angle-left"></i>
+                <span class="sr-only">Previous</span>
+                </a>
+            </li>
+            {{ range $i, $link := .pagination.Links }}
+                {{ $active := "" }}
+                {{ if $link.IsCurrentPage }}
+                    {{ $active = "active" }}
+                {{ end }}
+                <li class="page-item {{ $active }}"><a class="page-link" href="{{ $link.Url }}">{{ $link.Page }}</a></li>
+            {{ end }}
+            <li class="page-item">
+                <a class="page-link" href="{{ .pagination.NextPage }}">
+                    <i class="fa fa-angle-right"></i>
+                    <span class="sr-only">Next</span>
+                </a>
+            </li>
+        </ul>
+	</div>
+</div>
+{{ end }}

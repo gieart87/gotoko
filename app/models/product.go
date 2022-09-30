@@ -28,14 +28,22 @@ type Product struct {
 	DeletedAt        gorm.DeletedAt
 }
 
-func (p *Product) GetProducts(db *gorm.DB) (*[]Product, error) {
+func (p *Product) GetProducts(db *gorm.DB, perPage int, page int) (*[]Product, int64, error) {
 	var err error
 	var products []Product
+	var count int64
 
-	err = db.Debug().Model(&Product{}).Limit(20).Find(&products).Error
+	err = db.Debug().Model(&Product{}).Count(&count).Error
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
-	return &products, nil
+	offset := (page - 1) * perPage
+
+	err = db.Debug().Model(&Product{}).Order("created_at desc").Limit(perPage).Offset(offset).Find(&products).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return &products, count, nil
 }

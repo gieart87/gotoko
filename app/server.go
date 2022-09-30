@@ -31,6 +31,7 @@ func Run() {
 	appConfig.AppName = getEnv("APP_NAME", "GoToko")
 	appConfig.AppEnv = getEnv("APP_ENV", "development")
 	appConfig.AppPort = getEnv("APP_PORT", "9000")
+	appConfig.AppURL = getEnv("APP_URL", "http://localhost:9000")
 
 	dbConfig.DBHost = getEnv("DB_HOST", "localhost")
 	dbConfig.DBUser = getEnv("DB_USER", "user")
