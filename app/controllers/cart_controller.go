@@ -29,7 +29,9 @@ func GetShoppingCart(db *gorm.DB, cartID string) (*models.Cart, error) {
 	if err != nil {
 		existCart, _ = cart.CreateCart(db, cartID)
 	}
-	fmt.Println(existCart)
+
+	_, _ = existCart.CalculateCart(db, cartID)
+
 	return existCart, nil
 }
 
@@ -40,6 +42,7 @@ func (server *Server) GetCart(w http.ResponseWriter, r *http.Request) {
 	cart, _ = GetShoppingCart(server.DB, cartID)
 
 	fmt.Println("cart id ===> ", cart.ID)
+	fmt.Println("cart items ==>", cart.CartItems)
 }
 
 func (server *Server) AddItemToCart(w http.ResponseWriter, r *http.Request) {
@@ -60,8 +63,13 @@ func (server *Server) AddItemToCart(w http.ResponseWriter, r *http.Request) {
 
 	cartID := GetShoppingCartID(w, r)
 	cart, _ = GetShoppingCart(server.DB, cartID)
-
-	fmt.Println("cart id ===> ", cart.ID)
+	_, err = cart.AddItem(server.DB, models.CartItem{
+		ProductID: productID,
+		Qty:       qty,
+	})
+	if err != nil {
+		http.Redirect(w, r, "/products/"+product.Slug, http.StatusSeeOther)
+	}
 
 	http.Redirect(w, r, "/carts", http.StatusSeeOther)
 }

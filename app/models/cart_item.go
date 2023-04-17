@@ -3,6 +3,9 @@ package models
 import (
 	"time"
 
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+
 	"github.com/shopspring/decimal"
 )
 
@@ -22,4 +25,12 @@ type CartItem struct {
 	SubTotal        decimal.Decimal `gorm:"type:decimal(16,2)"`
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
+}
+
+func (c *CartItem) BeforeCreate(tx *gorm.DB) error {
+	if c.ID == "" {
+		c.ID = uuid.New().String()
+	}
+
+	return nil
 }
