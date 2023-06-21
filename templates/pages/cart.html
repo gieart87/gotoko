@@ -1,0 +1,116 @@
+{{ define "cart" }}
+<section class="breadcrumb-section pb-3 pt-3">
+    <div class="container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Shopping Cart</li>
+        </ol>
+    </div>
+</section>
+<section class="product-page pb-4 pt-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-title">
+                    <h2>Shopping Cart</h2>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive mt-5">
+            <form method="POST" action="/carts/update">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Image</th>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th width="10%">Quantity</th>
+                        <th>Subtotal</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{ range $i, $item := .items }}
+                    <tr>
+                        <td scope="row"><a href="/carts/remove/{{ $item.ID }}"><i class="fa fa-times"></i></a></td>
+                        <td><img src="https://placehold.jp/60x70.png" class="img-fluid"/></td>
+                        <td>{{ $item.Product.Name }}</td>
+                        <td>{{ $item.BasePrice }}</td>
+                        <td><input type="number" min="1" name="{{ $item.ID }}" class="form-control"
+                                   value="{{ $item.Qty }}"/></td>
+                        <td>{{ $item.BaseTotal }}</td>
+                    </tr>
+                    {{ end }}
+                    {{ if .items }}
+                    <tr>
+                        <td colspan="6">
+                            <button type="submit" class="btn btn-primary pull-right">Update Cart</button>
+                        </td>
+                    </tr>
+                    {{ else }}
+                    <tr>
+                        <td colspan="6">
+                            The cart is empty.
+                        </td>
+                    </tr>
+                    {{ end }}
+                    </tbody>
+                </table>
+            </form>
+        </div>
+        <div class="row">
+            <div class="col-6">&nbsp;</div>
+            <div class="col-6">
+                <h4>Cart Totals</h4>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Sub Total</th>
+                            <td>{{ .cart.BaseTotalPrice }}</td>
+                        </tr>
+                        <tr>
+                            <th>Tax ({{ .cart.TaxPercent }}%)</th>
+                            <td>{{ .cart.TaxAmount }}</td>
+                        </tr>
+                        <tr>
+                            <th>Shipping
+                            </th>
+                            <td>
+                                <form method="POST" id="calculate-shipping">
+                                    <div id="shipping-calculation-msg"></div>
+                                    <div class="form-group">
+                                        <select name="courier" class="form-control courier">
+                                            <option value="" selected>-- Pilih Kurir --</option>
+                                            <option value="jne">JNE</option>
+                                            <option value="pos">POS</option>
+                                            <option value="tiki">TIKI</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <select name="province_id" class="form-control province_id">
+                                            <option value="" selected>-- Pilih Provinsi --</option>
+                                            {{ range $keyProvince, $province := .provinces }}
+                                            <option value="{{ $province.ID }}">{{ $province.Name }}</option>
+                                            {{ end }}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <select name="city_id" class="form-control city_id"></select>
+                                    </div>
+                                    <div class="form-group">
+                                        <select name="shipping_fee" class="form-control shipping_fee_options"></select>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Total</th>
+                            <td><strong><span id="grand-total">{{ .cart.GrandTotal }}</span></strong></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{{ end }}

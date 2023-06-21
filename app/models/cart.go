@@ -14,6 +14,7 @@ type Cart struct {
 	DiscountAmount  decimal.Decimal `gorm:"type:decimal(16,2)"`
 	DiscountPercent decimal.Decimal `gorm:"type:decimal(10,2)"`
 	GrandTotal      decimal.Decimal `gorm:"type:decimal(16,2)"`
+	TotalWeight     int             `gorm:"-"`
 }
 
 func (c *Cart) GetCart(db *gorm.DB, cartID string) (*Cart, error) {
