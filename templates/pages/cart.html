@@ -16,6 +16,20 @@
                 </div>
             </div>
         </div>
+        {{ if .success }}
+        <div class="alert alert-success">
+            {{ range $i, $msg := .success }}
+            {{ $msg }}<br/>
+            {{ end }}
+        </div>
+        {{ end }}
+        {{ if .error }}
+        <div class="alert alert-danger">
+            {{ range $i, $msg := .error }}
+            {{ $msg }}<br/>
+            {{ end }}
+        </div>
+        {{ end }}
         <div class="table-responsive mt-5">
             <form method="POST" action="/carts/update">
                 <table class="table table-striped">
