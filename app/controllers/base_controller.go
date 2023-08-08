@@ -75,6 +75,7 @@ type Result struct {
 
 var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 var sessionShoppingCart = "shopping-cart-session"
+var sessionFlash = "flash-session"
 
 func (server *Server) Initialize(appConfig AppConfig, dbConfig DBConfig) {
 	fmt.Println("Welcome to " + appConfig.AppName)
@@ -273,4 +274,36 @@ func (server *Server) CalculateShippingFee(shippingParams models.ShippingFeePara
 	}
 
 	return shippingFeeOptions, nil
+}
+
+func SetFlash(w http.ResponseWriter, r *http.Request, name string, value string) {
+	session, err := store.Get(r, sessionFlash)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	session.AddFlash(value, name)
+	session.Save(r, w)
+}
+
+func GetFlash(w http.ResponseWriter, r *http.Request, name string) []string {
+	session, err := store.Get(r, sessionFlash)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return nil
+	}
+
+	fm := session.Flashes(name)
+	if len(fm) < 0 {
+		return nil
+	}
+
+	session.Save(r, w)
+	var flashes []string
+	for _, fl := range fm {
+		flashes = append(flashes, fl.(string))
+	}
+
+	return flashes
 }
