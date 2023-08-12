@@ -77,20 +77,22 @@
             <div class="col-6">
                 <h4>Cart Totals</h4>
                 <div class="table-responsive">
-                    <table class="table table-striped">
-                        <tr>
-                            <th>Sub Total</th>
-                            <td>{{ .cart.BaseTotalPrice }}</td>
-                        </tr>
-                        <tr>
-                            <th>Tax ({{ .cart.TaxPercent }}%)</th>
-                            <td>{{ .cart.TaxAmount }}</td>
-                        </tr>
-                        <tr>
-                            <th>Shipping
-                            </th>
-                            <td>
-                                <form method="POST" id="calculate-shipping">
+                    <form method="POST" id="calculate-shipping" action="/orders/checkout">
+                        <table class="table table-striped">
+                            <tr>
+                                <th>Sub Total
+                                <th>
+                                <td>{{ .cart.BaseTotalPrice }}</td>
+                            </tr>
+                            <tr>
+                                <th>Tax ({{ .cart.TaxPercent }}%)
+                                <th>
+                                <td>{{ .cart.TaxAmount }}</td>
+                            </tr>
+                            <tr>
+                                <th>Shipping
+                                <th>
+                                <td>
                                     <div id="shipping-calculation-msg"></div>
                                     <div class="form-group">
                                         <select name="courier" class="form-control courier">
@@ -114,14 +116,22 @@
                                     <div class="form-group">
                                         <select name="shipping_fee" class="form-control shipping_fee_options"></select>
                                     </div>
-                                </form>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Total</th>
-                            <td><strong><span id="grand-total">{{ .cart.GrandTotal }}</span></strong></td>
-                        </tr>
-                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Total
+                                <th>
+                                <td><strong><span id="grand-total">{{ .cart.GrandTotal }}</span></strong></td>
+                            </tr>
+                            <tr>
+                                <th>&nbsp;
+                                <th>
+                                <td>
+                                    <button type="submit" class="btn btn-success pull-right">Go to Checkout</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
                 </div>
             </div>
         </div>

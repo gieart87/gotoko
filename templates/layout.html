@@ -4,27 +4,27 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-
+    
     <title>IndoMarket - Free E-Commerce Website Template built with Boostrap 4 and Argon Design System</title>
-
+    
     <!-- Fonts -->
     <link
             href="https://fonts.googleapis.com/css?family=Poppins:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap"
             rel="stylesheet"/>
-
+    
     <!-- Icons -->
     <link href="/public/css/nucleo-icons.css" rel="stylesheet"/>
     <link href="/public/css/font-awesome.css" rel="stylesheet"/>
-
+    
     <!-- Jquery UI -->
     <link type="text/css" href="/public/css/jquery-ui.css" rel="stylesheet"/>
-
+    
     <!-- Argon CSS -->
     <link type="text/css" href="/public/css/argon-design-system.min.css" rel="stylesheet"/>
-
+    
     <!-- Main CSS-->
     <link type="text/css" href="/public/css/style.css" rel="stylesheet"/>
-
+    
     <!-- Optional Plugins-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"/>
 </head>
@@ -42,8 +42,13 @@
                 </div>
                 <div class="col-6 text-right">
                     <ul class="top-links account-links">
-                        <li><i class="fa fa-user-circle-o"></i> <a href="#">My Account</a></li>
-                        <li><i class="fa fa-power-off"></i> <a href="#">Login</a></li>
+                        {{ if .user }}
+                        <li><i class="fa fa-user-circle-o"></i> <a href="/profile">{{ .user.FirstName }}</a></li>
+                        <li><i class="fa fa-power-off"></i> <a href="/logout">Logout</a></li>
+                        {{ else }}
+                        <li><i class="fa fa-user-circle-o"></i> <a href="/register">Register</a></li>
+                        <li><i class="fa fa-power-off"></i> <a href="/login">Login</a></li>
+                        {{ end }}
                     </ul>
                 </div>
             </div>
@@ -86,12 +91,12 @@
     </div>
     <nav class="navbar navbar-main navbar-expand-lg navbar-light border-top border-bottom">
         <div class="container">
-
+            
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main_nav"
                     aria-controls="main_nav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
+            
             <div class="collapse navbar-collapse" id="main_nav">
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
@@ -101,7 +106,8 @@
                         <a class="nav-link" href="#">About</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="true">Pages</a>
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
+                           aria-expanded="true">Pages</a>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="/products">Products</a>
                             <a class="dropdown-item" href="product-detail.html">Product Detail</a>
