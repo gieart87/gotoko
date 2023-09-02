@@ -324,6 +324,12 @@ func ComparePassword(password string, hashedPassword string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password)) == nil
 }
 
+func MakePassword(password string) (string, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+
+	return string(hashedPassword), err
+}
+
 func (server *Server) CurrentUser(w http.ResponseWriter, r *http.Request) *models.User {
 	if !IsLoggedIn(r) {
 		return nil

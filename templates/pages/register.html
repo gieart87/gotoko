@@ -1,0 +1,82 @@
+{{ define "register" }}
+<section class="breadcrumb-section pb-3 pt-3">
+    <div class="container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Login</li>
+        </ol>
+    </div>
+</section>
+<div class="container pt-lg-7 pb-lg-7">
+    <div class="row justify-content-center">
+        <div class="col-lg-5">
+            <div class="card bg-secondary shadow border-0">
+                <div class="card-header bg-white pb-5">
+                    <div class="text-muted text-center mb-3"><small>Create new account</small></div>
+                    <div class="btn-wrapper text-center">
+                        <a href="#" class="btn btn-neutral btn-icon">
+                            <span class="btn-inner--icon"><img src="/public/img/icons/common/github.svg"></span>
+                            <span class="btn-inner--text">Github</span>
+                        </a>
+                        <a href="#" class="btn btn-neutral btn-icon">
+                            <span class="btn-inner--icon"><img src="/public/img/icons/common/google.svg"></span>
+                            <span class="btn-inner--text">Google</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body px-lg-5 py-lg-5">
+                    <div class="text-center text-muted mb-4">
+                        <small>Or sign in with credentials</small>
+                    </div>
+                    {{ if .error }}
+                    <div class="alert alert-warning">
+                        {{ range $i, $msg := .error }}
+                        {{ $msg }}<br/>
+                        {{ end }}
+                    </div>
+                    {{ end }}
+                    <form role="form" action="/register" method="POST">
+                        <div class="form-group mb-3">
+                            <div class="input-group input-group-alternative">
+                                <input class="form-control" name="first_name" placeholder="First name" type="text">
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <div class="input-group input-group-alternative">
+                                <input class="form-control" name="last_name" placeholder="Last name" type="text">
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <div class="input-group input-group-alternative">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="ni ni-email-83"></i></span>
+                                </div>
+                                <input class="form-control" name="email" placeholder="Email" type="email">
+                            </div>
+                        </div>
+                        <div class="form-group focused">
+                            <div class="input-group input-group-alternative">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
+                                </div>
+                                <input class="form-control" name="password" placeholder="Password" type="password">
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary my-4">Register</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-6">
+                    <a href="#" class="text-light"><small>Forgot password?</small></a>
+                </div>
+                <div class="col-6 text-right">
+                    <a href="#" class="text-light"><small>Create new account</small></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}
