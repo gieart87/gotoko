@@ -21,7 +21,9 @@ func (c *Cart) GetCart(db *gorm.DB, cartID string) (*Cart, error) {
 	var err error
 	var cart Cart
 
-	err = db.Debug().Preload("CartItems").Model(Cart{}).Where("id = ?", cartID).First(&cart).Error
+	err = db.Debug().Preload("CartItems").
+		Preload("CartItems.Product").
+		Model(Cart{}).Where("id = ?", cartID).First(&cart).Error
 	if err != nil {
 		return nil, err
 	}
@@ -194,6 +196,20 @@ func (c *Cart) RemoveItemByID(db *gorm.DB, itemID string) error {
 	}
 
 	err = db.Debug().Delete(&item).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *Cart) ClearCart(db *gorm.DB, cartID string) error {
+	err := db.Debug().Where("cart_id = ?", cartID).Delete(&CartItem{}).Error
+	if err != nil {
+		return err
+	}
+
+	err = db.Debug().Where("id = ?", cartID).Delete(&Cart{}).Error
 	if err != nil {
 		return err
 	}

@@ -32,6 +32,17 @@ func GetShoppingCartID(w http.ResponseWriter, r *http.Request) string {
 	return fmt.Sprintf("%v", session.Values["cart-id"])
 }
 
+func ClearCart(db *gorm.DB, cartID string) error {
+	var cart models.Cart
+
+	err := cart.ClearCart(db, cartID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func GetShoppingCart(db *gorm.DB, cartID string) (*models.Cart, error) {
 	var cart models.Cart
 
