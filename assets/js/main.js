@@ -54,7 +54,7 @@ $(function () {
             success: function (result) {
                 domShippingCalculationMsg.html('');
                 $.each(result.data, function (i, shipping_fee_option) {
-                    $(".shipping_fee_options").append(`<option value="${shipping_fee_option.service}-${shipping_fee_option.fee}">${shipping_fee_option.fee} (${shipping_fee_option.service})</option>`);
+                    $(".shipping_fee_options").append(`<option value="${shipping_fee_option.service}">${shipping_fee_option.fee} (${shipping_fee_option.service})</option>`);
                 });
             },
             error: function (e) {
