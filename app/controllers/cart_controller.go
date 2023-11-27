@@ -96,6 +96,7 @@ func (server *Server) GetCart(w http.ResponseWriter, r *http.Request) {
 		"provinces": provinces,
 		"success":   GetFlash(w, r, "success"),
 		"error":     GetFlash(w, r, "error"),
+		"user":      server.CurrentUser(w, r),
 	})
 }
 
