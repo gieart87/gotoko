@@ -6,6 +6,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gieart87/gotoko/app/consts"
+
 	"github.com/google/uuid"
 
 	"gorm.io/gorm"
@@ -62,6 +64,46 @@ func (o *Order) CreateOrder(db *gorm.DB, order *Order) (*Order, error) {
 	}
 
 	return order, nil
+}
+
+func (o *Order) FindByID(db *gorm.DB, id string) (*Order, error) {
+	var order Order
+
+	err := db.Debug().
+		Preload("OrderCustomer").
+		Preload("OrderItems").
+		Preload("OrderItems.Product").
+		Preload("User").
+		Model(&Order{}).Where("id = ?", id).
+		First(&order).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &order, nil
+}
+
+func (o *Order) GetStatusLabel() string {
+	var statusLabel string
+
+	switch o.Status {
+	case consts.OrderStatusPending:
+		statusLabel = "PENDING"
+	case consts.OrderStatusDelivered:
+		statusLabel = "DELIVERED"
+	case consts.OrderStatusReceived:
+		statusLabel = "RECEIVED"
+	case consts.OrderStatusCancelled:
+		statusLabel = "CANCELLED"
+	default:
+		statusLabel = "UNKNOWN"
+	}
+
+	return statusLabel
+}
+
+func (o *Order) IsPaid() bool {
+	return o.PaymentStatus == consts.OrderPaymentStatusPaid
 }
 
 func generateOrderNumber(db *gorm.DB) string {
