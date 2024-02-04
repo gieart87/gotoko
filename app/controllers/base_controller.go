@@ -298,7 +298,7 @@ func GetFlash(w http.ResponseWriter, r *http.Request, name string) []string {
 	}
 
 	fm := session.Flashes(name)
-	if len(fm) < 0 {
+	if len(fm) == 0 {
 		return nil
 	}
 
