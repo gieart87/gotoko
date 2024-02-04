@@ -313,11 +313,7 @@ func GetFlash(w http.ResponseWriter, r *http.Request, name string) []string {
 
 func IsLoggedIn(r *http.Request) bool {
 	session, _ := store.Get(r, sessionUser)
-	if session.Values["id"] == nil {
-		return false
-	}
-
-	return true
+	return session.Values["id"] != nil
 }
 
 func ComparePassword(password string, hashedPassword string) bool {
