@@ -9,7 +9,7 @@ type ProvinceData struct {
 }
 
 type Province struct {
-	ID   string `json:"province_id"'`
+	ID   string `json:"province_id"`
 	Name string `json:"province"`
 }
 
@@ -22,7 +22,7 @@ type CityData struct {
 }
 
 type City struct {
-	ID         string `json:"city_id"'`
+	ID         string `json:"city_id"`
 	Name       string `json:"city_name"`
 	PostalCode string `json:"postal_code"`
 	ProvinceID string `json:"province_id"`
