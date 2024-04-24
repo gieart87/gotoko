@@ -7,6 +7,9 @@ import (
 	"os"
 	"time"
 
+	"github.com/gieart87/gotoko/app/core/session/auth"
+	"github.com/gieart87/gotoko/app/core/session/flash"
+
 	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
 
@@ -45,17 +48,11 @@ type ShippingAddress struct {
 }
 
 func (server *Server) Checkout(w http.ResponseWriter, r *http.Request) {
-	if !IsLoggedIn(r) {
-		SetFlash(w, r, "error", "Anda perlu login!")
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
-		return
-	}
-
-	user := server.CurrentUser(w, r)
+	user := auth.CurrentUser(server.DB, w, r)
 
 	shippingCost, err := server.getSelectedShippingCost(w, r)
 	if err != nil {
-		SetFlash(w, r, "error", "Proses checkout gagal")
+		flash.SetFlash(w, r, "error", "Proses checkout gagal")
 		http.Redirect(w, r, "/carts", http.StatusSeeOther)
 		return
 	}
@@ -85,14 +82,14 @@ func (server *Server) Checkout(w http.ResponseWriter, r *http.Request) {
 
 	order, err := server.SaveOrder(user, checkoutRequest)
 	if err != nil {
-		SetFlash(w, r, "error", "Proses checkout gagal")
+		flash.SetFlash(w, r, "error", "Proses checkout gagal")
 		http.Redirect(w, r, "/carts", http.StatusSeeOther)
 		return
 	}
 
 	ClearCart(server.DB, cartID)
 
-	SetFlash(w, r, "success", "Data order berhasil disimpan")
+	flash.SetFlash(w, r, "success", "Data order berhasil disimpan")
 	http.Redirect(w, r, "/orders/"+order.ID, http.StatusSeeOther)
 }
 
@@ -118,8 +115,8 @@ func (server *Server) ShowOrder(w http.ResponseWriter, r *http.Request) {
 
 	_ = render.HTML(w, http.StatusOK, "show_order", map[string]interface{}{
 		"order":   order,
-		"success": GetFlash(w, r, "success"),
-		"user":    server.CurrentUser(w, r),
+		"success": flash.GetFlash(w, r, "success"),
+		"user":    auth.CurrentUser(server.DB, w, r),
 	})
 }
 

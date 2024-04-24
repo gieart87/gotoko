@@ -3,6 +3,8 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/gieart87/gotoko/app/middlewares"
+
 	"github.com/gorilla/mux"
 )
 
@@ -27,8 +29,8 @@ func (server *Server) initializeRoutes() {
 	server.Router.HandleFunc("/carts/apply-shipping", server.ApplyShipping).Methods("POST")
 	server.Router.HandleFunc("/carts/remove/{id}", server.RemoveItemByID).Methods("GET")
 
-	server.Router.HandleFunc("/orders/checkout", server.Checkout).Methods("POST")
-	server.Router.HandleFunc("/orders/{id}", server.ShowOrder).Methods("GET")
+	server.Router.HandleFunc("/orders/checkout", middlewares.AuthMiddleware(server.Checkout)).Methods("POST")
+	server.Router.HandleFunc("/orders/{id}", middlewares.AuthMiddleware(server.ShowOrder)).Methods("GET")
 
 	server.Router.HandleFunc("/payments/midtrans", server.Midtrans).Methods("POST")
 
