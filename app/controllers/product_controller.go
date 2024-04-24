@@ -4,6 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/gieart87/gotoko/app/core/session/flash"
+
+	"github.com/gieart87/gotoko/app/core/session/auth"
+
 	"github.com/gorilla/mux"
 
 	"github.com/gieart87/gotoko/app/models"
@@ -41,7 +45,7 @@ func (server *Server) Products(w http.ResponseWriter, r *http.Request) {
 	_ = render.HTML(w, http.StatusOK, "products", map[string]interface{}{
 		"products":   products,
 		"pagination": pagination,
-		"user":       server.CurrentUser(w, r),
+		"user":       auth.CurrentUser(server.DB, w, r),
 	})
 }
 
@@ -65,8 +69,8 @@ func (server *Server) GetProductBySlug(w http.ResponseWriter, r *http.Request) {
 
 	_ = render.HTML(w, http.StatusOK, "product", map[string]interface{}{
 		"product": product,
-		"success": GetFlash(w, r, "success"),
-		"error":   GetFlash(w, r, "error"),
-		"user":    server.CurrentUser(w, r),
+		"success": flash.GetFlash(w, r, "success"),
+		"error":   flash.GetFlash(w, r, "error"),
+		"user":    auth.CurrentUser(server.DB, w, r),
 	})
 }

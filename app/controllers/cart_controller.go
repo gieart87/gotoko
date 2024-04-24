@@ -9,6 +9,10 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/gieart87/gotoko/app/core/session/flash"
+
+	"github.com/gieart87/gotoko/app/core/session/auth"
+
 	"github.com/shopspring/decimal"
 
 	"github.com/gorilla/mux"
@@ -94,9 +98,9 @@ func (server *Server) GetCart(w http.ResponseWriter, r *http.Request) {
 		"cart":      cart,
 		"items":     items,
 		"provinces": provinces,
-		"success":   GetFlash(w, r, "success"),
-		"error":     GetFlash(w, r, "error"),
-		"user":      server.CurrentUser(w, r),
+		"success":   flash.GetFlash(w, r, "success"),
+		"error":     flash.GetFlash(w, r, "error"),
+		"user":      auth.CurrentUser(server.DB, w, r),
 	})
 }
 
@@ -112,7 +116,7 @@ func (server *Server) AddItemToCart(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if qty > product.Stock {
-		SetFlash(w, r, "error", "Stok tidak mencukupi")
+		flash.SetFlash(w, r, "error", "Stok tidak mencukupi")
 		http.Redirect(w, r, "/products/"+product.Slug, http.StatusSeeOther)
 		return
 	}
@@ -129,7 +133,7 @@ func (server *Server) AddItemToCart(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/products/"+product.Slug, http.StatusSeeOther)
 	}
 
-	SetFlash(w, r, "success", "Item berhasil ditambahkan")
+	flash.SetFlash(w, r, "success", "Item berhasil ditambahkan")
 	http.Redirect(w, r, "/carts", http.StatusSeeOther)
 }
 

@@ -3,6 +3,8 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/gieart87/gotoko/app/core/session/auth"
+	"github.com/gieart87/gotoko/app/core/session/flash"
 	"github.com/gieart87/gotoko/app/models"
 	"github.com/google/uuid"
 
@@ -16,7 +18,7 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 	})
 
 	_ = render.HTML(w, http.StatusOK, "login", map[string]interface{}{
-		"error": GetFlash(w, r, "error"),
+		"error": flash.GetFlash(w, r, "error"),
 	})
 }
 
@@ -27,18 +29,18 @@ func (server *Server) DoLogin(w http.ResponseWriter, r *http.Request) {
 	userModel := models.User{}
 	user, err := userModel.FindByEmail(server.DB, email)
 	if err != nil {
-		SetFlash(w, r, "error", "email or password invalid")
+		flash.SetFlash(w, r, "error", "email or password invalid")
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
 
-	if !ComparePassword(password, user.Password) {
-		SetFlash(w, r, "error", "email or password invalid")
+	if !auth.ComparePassword(password, user.Password) {
+		flash.SetFlash(w, r, "error", "email or password invalid")
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
 
-	session, _ := store.Get(r, sessionUser)
+	session, _ := auth.GetSessionUser(r)
 	session.Values["id"] = user.ID
 	session.Save(r, w)
 
@@ -52,7 +54,7 @@ func (server *Server) Register(w http.ResponseWriter, r *http.Request) {
 	})
 
 	_ = render.HTML(w, http.StatusOK, "register", map[string]interface{}{
-		"error": GetFlash(w, r, "error"),
+		"error": flash.GetFlash(w, r, "error"),
 	})
 }
 
@@ -63,7 +65,7 @@ func (server *Server) DoRegister(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 
 	if firstName == "" || lastName == "" || email == "" || password == "" {
-		SetFlash(w, r, "error", "First name, last name, email and password are required!")
+		flash.SetFlash(w, r, "error", "First name, last name, email and password are required!")
 		http.Redirect(w, r, "/register", http.StatusSeeOther)
 		return
 	}
@@ -71,12 +73,12 @@ func (server *Server) DoRegister(w http.ResponseWriter, r *http.Request) {
 	userModel := models.User{}
 	existUser, _ := userModel.FindByEmail(server.DB, email)
 	if existUser != nil {
-		SetFlash(w, r, "error", "Sorry, email already registered")
+		flash.SetFlash(w, r, "error", "Sorry, email already registered")
 		http.Redirect(w, r, "/register", http.StatusSeeOther)
 		return
 	}
 
-	hashedPassword, _ := MakePassword(password)
+	hashedPassword, _ := auth.MakePassword(password)
 	params := &models.User{
 		ID:        uuid.New().String(),
 		FirstName: firstName,
@@ -87,12 +89,12 @@ func (server *Server) DoRegister(w http.ResponseWriter, r *http.Request) {
 
 	user, err := userModel.CreateUser(server.DB, params)
 	if err != nil {
-		SetFlash(w, r, "error", "Sorry, registration failed")
+		flash.SetFlash(w, r, "error", "Sorry, registration failed")
 		http.Redirect(w, r, "/register", http.StatusSeeOther)
 		return
 	}
 
-	session, _ := store.Get(r, sessionUser)
+	session, _ := auth.GetSessionUser(r)
 	session.Values["id"] = user.ID
 	session.Save(r, w)
 
@@ -100,7 +102,7 @@ func (server *Server) DoRegister(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) Logout(w http.ResponseWriter, r *http.Request) {
-	session, _ := store.Get(r, sessionUser)
+	session, _ := auth.GetSessionUser(r)
 
 	session.Values["id"] = nil
 	session.Save(r, w)
