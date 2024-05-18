@@ -3,6 +3,8 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/gieart87/gotoko/app/consts"
+
 	"github.com/gieart87/gotoko/app/middlewares"
 
 	"github.com/gorilla/mux"
@@ -34,6 +36,7 @@ func (server *Server) initializeRoutes() {
 
 	server.Router.HandleFunc("/payments/midtrans", server.Midtrans).Methods("POST")
 
+	server.Router.HandleFunc("/admin/dashboard", middlewares.AuthMiddleware(middlewares.RoleMiddleware(server.AdminDashboard, server.DB, consts.RoleAdmin, consts.RoleOperator))).Methods("GET")
 	staticFileDirectory := http.Dir("./assets/")
 	staticFileHandler := http.StripPrefix("/public/", http.FileServer(staticFileDirectory))
 	server.Router.PathPrefix("/public/").Handler(staticFileHandler).Methods("GET")
